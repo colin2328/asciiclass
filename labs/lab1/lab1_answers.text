@@ -1,0 +1,14 @@
+mongo
+show dbs
+use test
+db["animals"].find()
+db["animals"].find({ type: "snake" }, {_id: 0, name: 1} 
+
+Query: 
+db["animals"].find({ type: "snake" }, {_id: 0, name: 1} )
+
+Result:
+> db["animals"].find({ type: "snake" }, {_id: 0, name: 1} )
+{ "name" : "bob" }
+{ "name" : "bob" }
+{ "name" : "jim" }

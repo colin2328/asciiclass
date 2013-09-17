@@ -1,12 +1,23 @@
 Find the number of deleted messages in the dataset.
 
+> db.tweets.find({delete : {$exists : true}}).count()
+1554
 
 Find the number of tweets that are replies to another tweet in this dataset.
 
+Couldn't figure this out in Mongo :/
+
 
 Find the five uids that have tweeted the most.
+
+Couldn't figure this out in Mongo :/
+
+
 
 
 
 Find the names of the top five places by number of tweets. (Tweets may have a "place" attribute that describes where the tweet is from).
 
+db.tweets.aggregate( { $group: { _id: "$place.name", numTweets: {$sum: 1} } }, {$sort: {numTweets: -1}}, {$limit: 6} );
+
+Couldn't figure this out in Mongo :/

@@ -1,0 +1,156 @@
+Lab 2 answers: Colin Taylor
+
+Part 2:
+
+import twitter_pb2
+from sets import Set
+from collections import Counter
+
+tweets = twitter_pb2.Tweets()
+
+f = open('twitter.pb', "rb")
+tweets.ParseFromString(f.read())
+
+# Find the number of deleted messages in the dataset.
+count = 0
+for tweet in tweets.tweets:
+	if tweet.is_delete:
+		count += 1
+
+print count
+# answer is 1554!
+
+# Find the number of tweets that are replies to another tweet in this dataset.
+tweet_id_set = Set()
+for tweet in tweets.tweets:
+	if not tweet.is_delete:
+		tweet_id_set.add(tweet.insert.id)
+
+count = 0
+for tweet in tweets.tweets:
+	if not tweet.is_delete and tweet.insert.reply_to in tweet_id_set:
+		count += 1
+
+print count
+#answer is 17!
+
+
+# Find the five uids that have tweeted the most.
+uid_tweet_counter = Counter()
+
+for tweet in tweets.tweets:
+	if not tweet.is_delete:
+		uid_tweet_counter[tweet.insert.uid] += 1
+
+print uid_tweet_counter.most_common(5)
+#answer is [(1269521828L, 5), (392695315L, 4), (424808364L, 3), (1706901902L, 3), (1471774728L, 2)]
+
+
+
+# Find the names of the top five places by number of tweets. (Tweets may have a "place" attribute that describes where the tweet is from).
+place_tweet_counter = Counter()
+
+for tweet in tweets.tweets:
+	if not tweet.is_delete and tweet.insert.place.name != "":
+		place_tweet_counter[tweet.insert.place.name] += 1
+
+print place_tweet_counter.most_common(5)
+#answer is [(u'T\xfcrkiye', 4), (u'Gambir', 3), (u'Mississippi', 2), (u'Malalayang', 2), (u'Nongsa', 2)]
+
+f.close()
+
+part 3:
+
+Find the number of deleted messages in the dataset.
+
+sqlite> SELECT count(*) FROM tweets WHERE is_delete = 0;
+10671
+
+Find the number of tweets that are replies to another tweet in this dataset.
+
+sqlite> SELECT count(*) FROM tweets AS tweets1, tweets AS tweets2 WHERE tweets1.reply_to=tweets2.id AND tweets2.is_delete=0;
+17
+
+
+
+Find the five uids that have tweeted the most.
+
+sqlite> SELECT tweets.uid, count(*) FROM tweets WHERE tweets.is_delete=0 GROUP BY tweets.uid ORDER BY count(*) DESC LIMIT 5;
+1269521828|5
+392695315|4
+424808364|3
+1706901902|3
+23991910|2
+
+
+Find the names of the top five places by number of tweets. (Tweets may have a "place" attribute that describes where the tweet is from).
+
+sqlite> SELECT places.name, count(*) FROM tweets, places WHERE tweets.id = places.tid AND tweets.is_delete=0 GROUP BY places.name ORDER BY count(*) DESC LIMIT 5;
+Türkiye|4
+Gambir|3
+Bandar Seremban|2
+East Borneo|2
+Malalayang|2
+
+
+part 4:
+Find the number of deleted messages in the dataset.
+
+> db.tweets.find({delete : {$exists : true}}).count()
+1554
+
+Find the number of tweets that are replies to another tweet in this dataset.
+
+Couldn't figure this out in Mongo :/
+
+
+Find the five uids that have tweeted the most.
+
+Couldn't figure this out in Mongo :/
+
+
+
+
+
+Find the names of the top five places by number of tweets. (Tweets may have a "place" attribute that describes where the tweet is from).
+
+db.tweets.aggregate( { $group: { _id: "$place.name", numTweets: {$sum: 1} } }, {$sort: {numTweets: -1}}, {$limit: 6} );
+
+Couldn't figure this out in Mongo :/
+
+
+Reflection:
+
+Read the schema and protocol buffer definition files. What are the main differences between the two? Are there any similarities?
+They are pretty similar. The protocol buffer definition keeps a delete and an insert as attributes of a tweet, wheras the schema definition assumes it is an insert has has special fields to deliminate a delete (such as the is_delete ). The schema also uses a place_coord relational mapping between the potentially one to many mapping of coordinates and places. The protocol buffer definition simply keeps a coord as a field of place.
+
+
+Describe one question that would be easier to answer with protocol buffers than via a SQL query.
+Queries that rely on looping to do, such as different types of aggregations that are not as simple as counting.
+
+
+Describe one question that would be easier to answer with MongoDB than via a SQL query.
+I found the mongo queries hard; Perhaps some of the aggregation tools make the query easier.
+
+Describe one question that would be easier to answer via a SQL query than using MongoDB.
+The second query was much easier using SQL:
+Find the number of tweets that are replies to another tweet in this dataset.
+
+
+What fields in the original JSON structure would be difficult to convert to relational database schemas?
+Perhaps the descriptions would be tough
+
+In terms of lines of code, when did various approaches shine? Think about the challenges of defining schemas, loading and storing the data, and running queries.
+SQL queries were efficient in terms of lines of code when it was simple.
+SQL might be longer in terms of schema design.
+
+Mongo is good in that its schema is fast and flexible- less time to design.
+
+Protocol buffers are good in that they are easily portable to many data structures, but have more redunancy
+
+What other metrics (e.g., time to implement, code redundancy, etc.) can we use to compare these different approaches? Which system is better by those measures?
+Implement time is a big one. Flexibility is another great one. Protocol buffers did well in both of these metrics.
+
+How long did this lab take you? We want to make sure to target future labs to not take too much of your time.
+About 4 hours.
+

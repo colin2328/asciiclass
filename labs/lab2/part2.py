@@ -47,10 +47,10 @@ print uid_tweet_counter.most_common(5)
 place_tweet_counter = Counter()
 
 for tweet in tweets.tweets:
-	if not tweet.is_delete and tweet.insert.place is not None:
+	if not tweet.is_delete and tweet.insert.place.name != "":
 		place_tweet_counter[tweet.insert.place.name] += 1
 
 print place_tweet_counter.most_common(5)
-#answer is [(u'', 10507), (u'T\xfcrkiye', 4), (u'Gambir', 3), (u'Mississippi', 2), (u'Malalayang', 2)]
+#answer is [(u'T\xfcrkiye', 4), (u'Gambir', 3), (u'Mississippi', 2), (u'Malalayang', 2), (u'Nongsa', 2)]
 
 f.close()

@@ -1,0 +1,12 @@
+Find the number of deleted messages in the dataset.
+
+
+Find the number of tweets that are replies to another tweet in this dataset.
+
+
+Find the five uids that have tweeted the most.
+
+
+
+Find the names of the top five places by number of tweets. (Tweets may have a "place" attribute that describes where the tweet is from).
+

@@ -37,3 +37,6 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+untitled.sublime-project
+asciiclass.sublime-project
+asciiclass.sublime-workspace

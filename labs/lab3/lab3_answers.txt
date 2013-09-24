@@ -1,11 +1,22 @@
 Part1:
 
+Note:data wrangler was misbehaving and even though the data in the web interface looked right, the script did not work perfectly- emailed TA's and they told me to just note this on my answers.
+
+script is in synset_wrangler.py
+output is in synset_out.txt
+
 Use the script to clean the data, then determine how many unique words there are in the dataset.
 
 cat synsets_out.txt | wc -l
   145106
 
 Part2:
+
+Script is in worldcup_wrangler.py
+output is in wrangler_world_cup_data.csv
+
+ans:
+
 Brazil 5
 Italy 4
 Germany 3
@@ -29,3 +40,96 @@ URS 0
 Belarus 0
 Bulgaria 0
 Korea 0
+
+
+Part3:
+
+awkfile is in awk_synset.awk
+
+colin@alfa6:~/asciiclass/labs/lab3$ cat synsets.txt | sed 's/[0-9]*,//'  | awk -f awk_synset.awk -F ',' | wc -l
+198770
+
+
+
+part4:
+
+awkfile is awk_worldcup.awk
+
+colin@alfa6:~/asciiclass/labs/lab3$ cat worldcup.txt | sed 's/\[\[\([0-9]*\)[^]]*\]\]/\1/g; s/.*fb|\([A-Za-z]*\)}}/\1/g; s/<sup><\/sup>//g; s/|bgcolor[^|]*//g; s/|align=center[^|]*//g' | grep -v '^|[-0-9]*$' | sed 's/[()]/ /g' | sed 's/,//g' | awk -f awk_worldcup.awk 
+BRA, 1958, 1
+BRA, 1962, 1
+BRA, 1970, 1
+BRA, 1994, 1
+BRA, 2002, 1
+BRA, 1950, 2
+BRA, 1998, 2
+BRA, 1938, 3
+BRA, 1978, 3
+BRA, 1974, 4
+ITA, 1934, 1
+ITA, 1938, 1
+ITA, 1982, 1
+ITA, 2006, 1
+ITA, 1970, 2
+ITA, 1994, 2
+ITA, 1990, 3
+ITA, 1978, 4
+GER, 1954, 1
+GER, 1974, 1
+GER, 1990, 1
+GER, 1966, 2
+GER, 1982, 2
+GER, 1986, 2
+GER, 2002, 2
+GER, 1934, 3
+GER, 1970, 3
+GER, 2006, 3
+GER, 2010, 3
+GER, 1958, 4
+ARG, 1978, 1
+ARG, 1986, 1
+ARG, 1930, 2
+ARG, 1990, 2
+URU, 1930, 1
+URU, 1950, 1
+URU, 1954, 4
+URU, 1970, 4
+URU, 2010, 4
+FRA, 1998, 1
+FRA, 2006, 2
+FRA, 1958, 3
+FRA, 1986, 3
+FRA, 1982, 4
+ENG, 1966, 1
+ENG, 1990, 4
+ESP, 2010, 1
+ESP, 1950, 4
+NED, 1974, 2
+NED, 1978, 2
+NED, 2010, 2
+NED, 1998, 4
+TCH, 1934, 2
+TCH, 1962, 2
+HUN, 1938, 2
+HUN, 1954, 2
+SWE, 1958, 2
+SWE, 1950, 3
+SWE, 1994, 3
+SWE, 1938, 4
+POL, 1974, 3
+POL, 1982, 3
+AUT, 1954, 3
+AUT, 1934, 4
+POR, 1966, 3
+POR, 2006, 4
+USA, 1930, 3
+CHI, 1962, 3
+CRO, 1998, 3
+TUR, 2002, 3
+YUG, 1930, 4
+YUG, 1962, 4
+URS, 1966, 4
+BEL, 1986, 4
+BUL, 1994, 4
+KOR, 2002, 4
+

@@ -1,3 +1,5 @@
+Name: Colin Taylor
+
 Part1:
 
 Note:data wrangler was misbehaving and even though the data in the web interface looked right, the script did not work perfectly- emailed TA's and they told me to just note this on my answers.
@@ -133,3 +135,26 @@ BEL, 1986, 4
 BUL, 1994, 4
 KOR, 2002, 4
 
+
+
+Questions:
+
+From your experience, briefly discuss the pro and cons between using Data Wrangler as compared to lower levels tools like sed/awk?
+I much preferred sed and awk to data wrangler. Data wrangler performs some tasks much easier (such as helps you with reg ex for extractions and cuts), but is much harder to customize if you need to do something slightly different. Also, data wrangler was too buggy too use. I would gte my script working on the online interface, export my python code, and it would not run on the same data for various errors (type errors, modules not being there, etc). I don't think data wrangler is stable enough to be reliable.
+
+Sed and awk take a little more time to learn to be proficient, but they give you much more power in the tools. They are also more stable :)
+
+
+What additional operations would have made using Data Wrangler "easier"?
+Having the ability to add text (such as 1, 2, 3, 4 for first, second third and fourth places). This had to be extracted from the column names, which was a pain!
+
+Additional Feedback:
+
+Is the lab too difficult or too easy?
+fine
+Did you look forward to any exercise that the lab did not cover?
+Which parts of the lab were interesting or valuable towards understanding the material?
+sed and awk were awesome! Will definitely use them in the future. Data wrangler is a pain to use and is not stable enough to put on a lab.
+
+How is the pace of the course so far?
+good

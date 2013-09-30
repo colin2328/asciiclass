@@ -15,31 +15,31 @@ def str_attribute_match(foursquare_entry, locu_entry, attribute):
 	if locu_entry[attribute] == "":
 		locu_entry[attribute] = None
 	if locu_entry[attribute] != None and foursquare_entry[attribute] != None:
-		foursquare_entry[attribute].lower()
-		foursquare_entry[attribute].replace('/' , '')
-		foursquare_entry[attribute].replace(' st. ' , ' ')
-		foursquare_entry[attribute].replace(' street ' , ' ')
-		foursquare_entry[attribute].replace(' ave ' , ' ')
-		foursquare_entry[attribute].replace(' blvd. ' , ' ')
-		foursquare_entry[attribute].replace(' avenue ' , ' ')
-		foursquare_entry[attribute].replace(' w. ' , ' ')
-		foursquare_entry[attribute].replace(' e. ' , ' ')
-		foursquare_entry[attribute].replace(' s. ' , ' ')
-		foursquare_entry[attribute].replace(' n. ' , ' ')
-		foursquare_entry[attribute].replace(' boulevard ' , ' ')
-
-		locu_entry[attribute].lower()
-		locu_entry[attribute].replace('/' , '')
-		locu_entry[attribute].replace(' st. ' , ' ')
-		locu_entry[attribute].replace(' street ' , ' ')
-		locu_entry[attribute].replace(' ave ' , ' ')
-		locu_entry[attribute].replace(' blvd. ' , ' ')
-		locu_entry[attribute].replace(' avenue ' , ' ')
-		locu_entry[attribute].replace(' w. ' , ' ')
-		locu_entry[attribute].replace(' e. ' , ' ')
-		locu_entry[attribute].replace(' s. ' , ' ')
-		locu_entry[attribute].replace(' n. ' , ' ')
-		locu_entry[attribute].replace(' boulevard ' , ' ')
+#		foursquare_entry[attribute].lower()
+#		foursquare_entry[attribute].replace('/' , '')
+#		foursquare_entry[attribute].replace(' st. ' , ' ')
+#		foursquare_entry[attribute].replace(' street ' , ' ')
+#		foursquare_entry[attribute].replace(' ave ' , ' ')
+#		foursquare_entry[attribute].replace(' blvd. ' , ' ')
+#		foursquare_entry[attribute].replace(' avenue ' , ' ')
+#		foursquare_entry[attribute].replace(' w. ' , ' ')
+#		foursquare_entry[attribute].replace(' e. ' , ' ')
+#		foursquare_entry[attribute].replace(' s. ' , ' ')
+#		foursquare_entry[attribute].replace(' n. ' , ' ')
+#		foursquare_entry[attribute].replace(' boulevard ' , ' ')
+#
+#		locu_entry[attribute].lower()
+#		locu_entry[attribute].replace('/' , '')
+#		locu_entry[attribute].replace(' st. ' , ' ')
+#		locu_entry[attribute].replace(' street ' , ' ')
+#		locu_entry[attribute].replace(' ave ' , ' ')
+#		locu_entry[attribute].replace(' blvd. ' , ' ')
+#		locu_entry[attribute].replace(' avenue ' , ' ')
+#		locu_entry[attribute].replace(' w. ' , ' ')
+#		locu_entry[attribute].replace(' e. ' , ' ')
+#		locu_entry[attribute].replace(' s. ' , ' ')
+#		locu_entry[attribute].replace(' n. ' , ' ')
+#		locu_entry[attribute].replace(' boulevard ' , ' ')
 
 		if foursquare_entry[attribute] == locu_entry[attribute]:
 			return 1
@@ -76,9 +76,9 @@ def calculate_score(foursquare_entry, locu_entry):
 	elif address and zipcode and name:
 		return 1
 	else:
-		return name * .5 + phone * .2 + address * .2 + website * .2
+		return name * .5 + phone * .2 + address * .5 + website * .2 + zipcode * .4
 
-thresh = .71
+thresh = .7
 total_matches = len(id_dict)
 
 true_pos = 0
@@ -90,9 +90,12 @@ for locu_entry in locu_data:
 		if score >= thresh:
 			estimated_matches+= 1
 			if is_match(foursquare_entry, locu_entry):
+				
 				true_pos+=1
 			else:
 				false_pos+=1
+				print foursquare_entry["name"]
+				print locu_entry["name"]
 				# print(foursquare_entry)
 
 if estimated_matches != 0:
@@ -106,3 +109,4 @@ print "True Positives: " + str(true_pos)
 print "False Positives: " + str(false_pos)
 print "Precision: " + str(precision)
 print "Recall: " + str(recall)
+print "F-Measure: " + str((2 * precision * recall) / (precision + recall))

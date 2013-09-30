@@ -1,5 +1,6 @@
 #split by locality- has to match - hash them
 import json, csv
+from six import string_types
 
 RUNNING_ON_TEST_SET = True
 
@@ -10,44 +11,37 @@ matches_data = csv.DictReader(open('matches_train_hard.csv')) #locu id is 1, fou
 foursquare_test_data = json.load(open('foursquare_test_hard.json'))
 locu_test_data = json.load(open('locu_test_hard.json'))
 
+#data cleanup
+def process_data(data_set):
+	for entry in data_set:
+		for attr_name in entry:
+			if entry[attr_name] == "":
+				entry[attr_name] = None
+			elif isinstance(entry[attr_name], string_types):
+				entry[attr_name] = entry[attr_name].lower()
+				entry[attr_name] = entry[attr_name].replace('/' , '')
+				entry[attr_name] = entry[attr_name].replace(' st. ' , ' ')
+				entry[attr_name] = entry[attr_name].replace(' street ' , ' ')
+				entry[attr_name] = entry[attr_name].replace(' ave ' , ' ')
+				entry[attr_name] = entry[attr_name].replace(' blvd. ' , ' ')
+				entry[attr_name] = entry[attr_name].replace(' avenue ' , ' ')
+				entry[attr_name] = entry[attr_name].replace(' w. ' , ' ')
+				entry[attr_name] = entry[attr_name].replace(' e. ' , ' ')
+				entry[attr_name] = entry[attr_name].replace(' s. ' , ' ')
+				entry[attr_name] = entry[attr_name].replace(' n. ' , ' ')
+				entry[attr_name] = entry[attr_name].replace(' boulevard ' , ' ')
+
+process_data(foursquare_data)
+process_data(locu_data)
+
+
 id_dict = {}
 for row in matches_data:
 	id_dict[row['locu_id']] = row['foursquare_id']
 
 def str_attribute_match(foursquare_entry, locu_entry, attribute):
-	if foursquare_entry[attribute] == "":
-		foursquare_entry[attribute] = None
-	if locu_entry[attribute] == "":
-		locu_entry[attribute] = None
-	if locu_entry[attribute] != None and foursquare_entry[attribute] != None:
-#		foursquare_entry[attribute].lower()
-#		foursquare_entry[attribute].replace('/' , '')
-#		foursquare_entry[attribute].replace(' st. ' , ' ')
-#		foursquare_entry[attribute].replace(' street ' , ' ')
-#		foursquare_entry[attribute].replace(' ave ' , ' ')
-#		foursquare_entry[attribute].replace(' blvd. ' , ' ')
-#		foursquare_entry[attribute].replace(' avenue ' , ' ')
-#		foursquare_entry[attribute].replace(' w. ' , ' ')
-#		foursquare_entry[attribute].replace(' e. ' , ' ')
-#		foursquare_entry[attribute].replace(' s. ' , ' ')
-#		foursquare_entry[attribute].replace(' n. ' , ' ')
-#		foursquare_entry[attribute].replace(' boulevard ' , ' ')
-#
-#		locu_entry[attribute].lower()
-#		locu_entry[attribute].replace('/' , '')
-#		locu_entry[attribute].replace(' st. ' , ' ')
-#		locu_entry[attribute].replace(' street ' , ' ')
-#		locu_entry[attribute].replace(' ave ' , ' ')
-#		locu_entry[attribute].replace(' blvd. ' , ' ')
-#		locu_entry[attribute].replace(' avenue ' , ' ')
-#		locu_entry[attribute].replace(' w. ' , ' ')
-#		locu_entry[attribute].replace(' e. ' , ' ')
-#		locu_entry[attribute].replace(' s. ' , ' ')
-#		locu_entry[attribute].replace(' n. ' , ' ')
-#		locu_entry[attribute].replace(' boulevard ' , ' ')
-
-		if foursquare_entry[attribute] == locu_entry[attribute]:
-			return 1
+	if locu_entry[attribute] != None and foursquare_entry[attribute] != None and foursquare_entry[attribute] == locu_entry[attribute]:
+		return 1
 	return 0
 
 def str_attribute_jaccard(foursquare_entry, locu_entry, attribute):
@@ -72,10 +66,6 @@ def is_match(foursquare_entry, locu_entry):
 		return False
 
 def long_attribute_match(foursquare_entry, locu_entry, attribute, threshold):
-	if foursquare_entry[attribute] == "":
-		foursquare_entry[attribute] = None
-	if locu_entry[attribute] == "":
-		locu_entry[attribute] = None
 	if locu_entry[attribute] != None and foursquare_entry !=None  and abs(foursquare_entry[attribute] - locu_entry[attribute]) <= threshold:
 		return 1
 	else:
@@ -142,3 +132,4 @@ else:
 	print "Precision: " + str(precision)
 	print "Recall: " + str(recall)
 	print "F-Measure: " + str((2 * precision * recall) / (precision + recall))
+

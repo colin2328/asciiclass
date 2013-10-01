@@ -2,7 +2,7 @@
 import json, csv
 from six import string_types
 
-RUNNING_ON_TEST_SET = True
+RUNNING_ON_TEST_SET = False
 
 foursquare_data = json.load(open('foursquare_train_hard.json'))
 locu_data = json.load(open('locu_train_hard.json'))

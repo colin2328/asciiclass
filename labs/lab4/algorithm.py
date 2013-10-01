@@ -6,7 +6,7 @@ RUNNING_ON_TEST_SET = True
 
 foursquare_data = json.load(open('foursquare_train_hard.json'))
 locu_data = json.load(open('locu_train_hard.json'))
-matches_data = csv.DictReader(open('matches_train_hard.csv')) #locu id is 1, foursuare is 2
+matches_data = csv.DictReader(open('matches_train_hard.csv')) #locu id is 1, foursquare is 2
 
 foursquare_test_data = json.load(open('foursquare_test_hard.json'))
 locu_test_data = json.load(open('locu_test_hard.json'))
@@ -85,7 +85,7 @@ def long_attribute_match(foursquare_entry, locu_entry, attribute, threshold):
 def calculate_score(foursquare_entry, locu_entry):
 	lat_long_thresh = 0.000005
 	address_thresh = 0.8
-	name_thresh = 0.1
+	name_thresh = 0.15
 	lat_long = long_attribute_match(foursquare_entry, locu_entry, 'longitude', lat_long_thresh) and long_attribute_match(foursquare_entry, locu_entry, 'latitude', lat_long_thresh)
 	name = str_attribute_match(foursquare_entry, locu_entry, 'name')
 	name_jaccard = str_attribute_jaccard(foursquare_entry, locu_entry, 'name')
@@ -108,7 +108,7 @@ def calculate_score(foursquare_entry, locu_entry):
 		return (name * .5 + phone * .5 + address * .5 + website * .2 + zipcode * .4) / 1.4
 	return 0
 
-thresh = .8
+thresh = .9
 total_matches = len(id_dict)
 estimated_matches = 0
 
@@ -119,9 +119,6 @@ if RUNNING_ON_TEST_SET:
 		for foursquare_entry in foursquare_test_data:
 			score = calculate_score(foursquare_entry, locu_entry)			
 			if score >= thresh:
-				if foursquare_entry['id'] == '501b1b55e4b02f1fd37b9f9a':
-					print score
-					print locu_entry
 				estimated_matches += 1
 				matches_csv.write(locu_entry['id'] + "," + foursquare_entry['id'] + "\n")
 
@@ -147,6 +144,7 @@ else:
 		precision = 0
 	recall = float(estimated_matches) / total_matches
 
+	print "Ground Truth Matches: " + str(total_matches)
 	print "Estimated Matches: " + str(estimated_matches)
 	print "True Positives: " + str(true_pos)
 	print "False Positives: " + str(false_pos)

@@ -1,0 +1,15 @@
+1. Username and emails
+colin_t(colin_t@mit.edu), sherwu (sherwu@mit.edu), brianb (brianb@mit.edu)
+
+2. Teammates 
+Colin Taylor, Sherwin Wu, Brian Bell
+
+3. Describe your entity resolution technique, as well as its precision, recall, and F1 score.
+Our technique relies upon scoring how similar two entries are and comparing it to a threshold. We compare the latitude/longitude, name, Jaccard distance of the name,  address, Jaccard distance of the address, phone, zipcode and website. Since latitude/longitude, or a combination of address/zip, or name and phone are very specific, we deem it a match if combinations of these are the same. Otherwise we weight the value of each type of match and add the terms to obtain a total value. If that value exceeds the threshold, then enough of the data from the two entries is alike to call them a match.
+
+What were the most important features that powered your technique?
+The key features included some very strategic cleaning up/standardization of web URLs, addresses and names, in addition to Jaccard distance and iterative threshold optimization. 
+
+How did you avoid pairwise comparison of all venues across both datasets?
+To avoid pairwise comparison, we broke one dataset up into groups based upon the first letter of the name of each entry. Then we compared each record of the other dataset to only the groups that matched the first letters of all re-arrangements of its title. So "Frank's Bistro" in dataset 1 would be filed under F, and an entry named "Frank's Bistro" in dataset 2 would be compared only with the lists under F and B (to cover for "Bistro Frank"), avoiding exhaustive pairwise comparison.
+

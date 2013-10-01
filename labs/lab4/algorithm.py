@@ -115,28 +115,68 @@ estimated_matches = 0
 if RUNNING_ON_TEST_SET:
 	matches_csv = open('matches_test.csv', 'wb')
 	matches_csv.write('locu_id,foursquare_id\n')
+	letter_dict = {}
+	# Add all locu entries to dict, organized by first letter
 	for locu_entry in locu_test_data:
-		for foursquare_entry in foursquare_test_data:
-			score = calculate_score(foursquare_entry, locu_entry)			
-			if score >= thresh:
-				estimated_matches += 1
-				matches_csv.write(locu_entry['id'] + "," + foursquare_entry['id'] + "\n")
+		name = locu_entry['name']
+		first_letter = name[0].lower()
+		if first_letter not in letter_dict:
+			letter_dict[first_letter] = list()
+		letter_dict[first_letter].append(locu_entry)
+
+	for foursquare_entry in foursquare_test_data:
+		name = foursquare_entry['name'].lower()
+		name_array = name.split(" ")
+		first_letters = {}
+		for elem in name_array:
+			if elem[0] not in first_letters:
+				first_letters[elem[0]] = elem[0]
+		
+	    # Now compare foursquare entry to locu entries in letter_dict
+		for letter in first_letters:
+			if letter in letter_dict:
+				for locu_entry in letter_dict[letter]:
+					score = calculate_score(foursquare_entry, locu_entry)			
+					if score >= thresh:
+						estimated_matches += 1
+						matches_csv.write(locu_entry['id'] + "," + foursquare_entry['id'] + "\n")
 
 	matches_csv.close()
 else:
 	true_pos = 0
 	false_pos = 0
+	estimated_matches = 0
+	letter_dict = {}
+	# Add all locu entries to dict, organized by first letter
 	for locu_entry in locu_data:
-		for foursquare_entry in foursquare_data:
-			score = calculate_score(foursquare_entry, locu_entry)
-			if score >= thresh:
-				estimated_matches+= 1
-				if is_match(foursquare_entry, locu_entry):
-					true_pos+=1
-				else:
-					false_pos+=1
-					print(foursquare_entry)
-					print(locu_entry)
+		name = locu_entry['name'].lower()
+		first_letter = name[0]
+		if first_letter not in letter_dict:
+			letter_dict[first_letter] = list()
+		letter_dict[first_letter].append(locu_entry)
+
+	for foursquare_entry in foursquare_data:
+		name = foursquare_entry['name'].lower()
+		name_array = name.split(" ")
+		first_letters = {}
+		for elem in name_array:
+			if len(elem) > 0:
+				if elem[0] not in first_letters:
+					first_letters[elem[0]] = elem[0]
+		
+	    # Now compare foursquare entry to locu entries in letter_dict
+		for letter in first_letters:
+			if letter in letter_dict:
+				for locu_entry in letter_dict[letter]:
+					score = calculate_score(foursquare_entry, locu_entry)
+					if score >= thresh:
+						estimated_matches+= 1
+						if is_match(foursquare_entry, locu_entry):
+							true_pos+=1
+						else:
+							false_pos+=1
+							# print(foursquare_entry)
+							# print(locu_entry)
 
 	if estimated_matches != 0:
 		precision = float(true_pos) / estimated_matches

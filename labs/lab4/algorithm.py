@@ -105,12 +105,12 @@ def calculate_score(foursquare_entry, locu_entry):
 	elif phone and name_jaccard >= name_thresh:
 		return 1
 	else:
-		return (name * .5 + phone * .5 + address * .5 + website * .2 + zipcode * .4) / 1.4
+		return (name * 1 + phone * .5 + address * .5 + website * .5 + zipcode * .5) / 3
 	return 0
 
-thresh = .9
 total_matches = len(id_dict)
 estimated_matches = 0
+thresh = .55
 
 if RUNNING_ON_TEST_SET:
 	matches_csv = open('matches_test.csv', 'wb')
@@ -175,14 +175,13 @@ else:
 							true_pos+=1
 						else:
 							false_pos+=1
-							# print(foursquare_entry)
-							# print(locu_entry)
 
 	if estimated_matches != 0:
 		precision = float(true_pos) / estimated_matches
 	else:
 		precision = 0
-	recall = float(estimated_matches) / total_matches
+	recall = float(true_pos) / total_matches
+	f_measure = (2 * precision * recall) / (precision + recall)
 
 	print "Ground Truth Matches: " + str(total_matches)
 	print "Estimated Matches: " + str(estimated_matches)
@@ -190,5 +189,5 @@ else:
 	print "False Positives: " + str(false_pos)
 	print "Precision: " + str(precision)
 	print "Recall: " + str(recall)
-	print "F-Measure: " + str((2 * precision * recall) / (precision + recall))
+	print "F-Measure: " + str(f_measure)
 

@@ -19,20 +19,30 @@ def process_data(data_set):
 				entry[attr_name] = None
 			elif isinstance(entry[attr_name], string_types):
 				entry[attr_name] = entry[attr_name].lower()
-				entry[attr_name] = entry[attr_name].replace('/' , '')
-				entry[attr_name] = entry[attr_name].replace(' st. ' , ' ')
-				entry[attr_name] = entry[attr_name].replace(' street ' , ' ')
-				entry[attr_name] = entry[attr_name].replace(' ave ' , ' ')
-				entry[attr_name] = entry[attr_name].replace(' blvd. ' , ' ')
-				entry[attr_name] = entry[attr_name].replace(' avenue ' , ' ')
-				entry[attr_name] = entry[attr_name].replace(' w. ' , ' ')
-				entry[attr_name] = entry[attr_name].replace(' e. ' , ' ')
-				entry[attr_name] = entry[attr_name].replace(' s. ' , ' ')
-				entry[attr_name] = entry[attr_name].replace(' n. ' , ' ')
-				entry[attr_name] = entry[attr_name].replace(' boulevard ' , ' ')
+				if attr_name == 'street_address':
+					entry[attr_name] = entry[attr_name].replace('/' , '')
+					entry[attr_name] = entry[attr_name].replace('.' , '')
+					entry[attr_name] = entry[attr_name].replace(' st ' , 'street ')
+					entry[attr_name] = entry[attr_name].replace(' ave ' , 'avenue ')
+					entry[attr_name] = entry[attr_name].replace(' blvd ' , 'boulevard ')
+					entry[attr_name] = entry[attr_name].replace(' pl ' , 'plaza ')
+					entry[attr_name] = entry[attr_name].replace(' w ' , ' west ')
+					entry[attr_name] = entry[attr_name].replace(' e ' , ' east ')
+					entry[attr_name] = entry[attr_name].replace(' s ' , ' south ')
+					entry[attr_name] = entry[attr_name].replace(' n ' , ' north ')
+					entry[attr_name] = entry[attr_name].replace(' boulevard ' , ' ')
+				elif attr_name == 'website':
+					entry[attr_name] = entry[attr_name].replace('/' , '')
+				elif attr_name == 'phone':
+					entry[attr_name] = entry[attr_name].replace('(' , '')
+					entry[attr_name] = entry[attr_name].replace(')' , '')
+					entry[attr_name] = entry[attr_name].replace(' ' , '')
+					entry[attr_name] = entry[attr_name].replace('-' , '')
 
 process_data(foursquare_data)
 process_data(locu_data)
+process_data(foursquare_test_data)
+process_data(locu_test_data)
 
 
 id_dict = {}
@@ -74,11 +84,15 @@ def long_attribute_match(foursquare_entry, locu_entry, attribute, threshold):
 
 def calculate_score(foursquare_entry, locu_entry):
 	lat_long_thresh = 0.000005
+	address_thresh = 0.8
+	name_thresh = 0.1
 	lat_long = long_attribute_match(foursquare_entry, locu_entry, 'longitude', lat_long_thresh) and long_attribute_match(foursquare_entry, locu_entry, 'latitude', lat_long_thresh)
 	name = str_attribute_match(foursquare_entry, locu_entry, 'name')
+	name_jaccard = str_attribute_jaccard(foursquare_entry, locu_entry, 'name')
+
 	address = str_attribute_match(foursquare_entry, locu_entry, 'street_address')
 	address_jaccard = str_attribute_jaccard(foursquare_entry, locu_entry, 'street_address')
-	if address_jaccard > 0.7:
+	if address_jaccard >= address_thresh:
 		address = 1
 	phone = str_attribute_match(foursquare_entry, locu_entry, 'phone')
 	zipcode = str_attribute_match(foursquare_entry, locu_entry, 'postal_code')
@@ -86,12 +100,15 @@ def calculate_score(foursquare_entry, locu_entry):
 
 	if lat_long:
 		return 1
-	elif address and zipcode and name:
+	elif address and zipcode and name_jaccard >= name_thresh:
+		return 1
+	elif phone and name_jaccard >= name_thresh:
 		return 1
 	else:
-		return name * .5 + phone * .2 + address * .5 + website * .2 + zipcode * .4
+		return (name * .5 + phone * .5 + address * .5 + website * .2 + zipcode * .4) / 1.4
+	return 0
 
-thresh = .7
+thresh = .8
 total_matches = len(id_dict)
 estimated_matches = 0
 
@@ -100,8 +117,11 @@ if RUNNING_ON_TEST_SET:
 	matches_csv.write('locu_id,foursquare_id\n')
 	for locu_entry in locu_test_data:
 		for foursquare_entry in foursquare_test_data:
-			score = calculate_score(foursquare_entry, locu_entry)
+			score = calculate_score(foursquare_entry, locu_entry)			
 			if score >= thresh:
+				if foursquare_entry['id'] == '501b1b55e4b02f1fd37b9f9a':
+					print score
+					print locu_entry
 				estimated_matches += 1
 				matches_csv.write(locu_entry['id'] + "," + foursquare_entry['id'] + "\n")
 
@@ -118,7 +138,8 @@ else:
 					true_pos+=1
 				else:
 					false_pos+=1
-					# print(foursquare_entry)
+					print(foursquare_entry)
+					print(locu_entry)
 
 	if estimated_matches != 0:
 		precision = float(true_pos) / estimated_matches

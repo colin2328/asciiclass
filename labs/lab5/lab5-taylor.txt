@@ -1,0 +1,38 @@
+Colin Taylor
+
+List the top TF-IDF terms for Enron's key people (or as many as you can find):
+Kenneth Lay, Founder, Chairman and CEO
+{"tfidfs": {"program": 450.09289354484832, "enron's": 186.74588901026718, "kenneth": 206.87223700079727, "enron": 269.10032764102181}, "sender": "kenneth.lay@enron.com"}	
+
+Jeffrey Skilling, former President, and COO
+{"tfidfs": {"sherri": 357.56593193759096, "jeff": 913.81202937676005, "please": 329.68374233796209, "enron": 315.35194645432244}, "sender": "jeff.skilling@enron.com"}
+
+
+Andrew Fastow, former CFO
+{"tfidfs": {"transaction": 69.697709879765327, "petrobras": 218.70016827905806, "asep": 157.86709402585441, "vagner": 105.24472935056961}, "sender": "andrew.fastow@enron.com"}	
+
+Rebecca Mark-Jusbasche, former Vice Chairman, Chairman and CEO of Enron International - couldn't find email
+
+Stephen F. Cooper, Interim CEO and CRO - couldn't find email
+
+
+How did you compute TF-IDF on the whole corpus? What was easy, what was hard?
+I did did MR to get (author, term) -> count N. Then I got term -> (author, count N). I then did the following:
+total_number_emails = 516893
+		sender_counts1, sender_counts2 = itertools.tee(sender_counts) # hack to get generator to be itereated on 2x
+		number_emails_with_term = sum(1 for _ in sender_counts1)
+		idf = math.log(total_number_emails / number_emails_with_term)
+
+		for sender_count in sender_counts2:
+			tf = sender_count['count']
+			tfidf = tf * idf
+			yield sender_count['sender'], {'term': term, 'tfidf': tfidf}
+
+It was not hard, but not easy to reason about this. It was hard to think of how to do this as the # authors -> large N.
+
+
+The from and to,cc,bcc fields in each email define directed edges (from --> to) between each person (node). These edges form a graph.
+
+Sketch a description of how you would use EMR to run page rank on this graph. What would be some pain points?
+
+You woudl first use MR to sum the number of links to each recipeient for each sender (strength of edges). Then you would reverse this, and use emails from receiver to sender as edges. You would use these receivers as keys, and sum the number of links to each receiver as the page rank.

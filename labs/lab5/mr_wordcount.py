@@ -8,7 +8,7 @@ class MRWordCount(MRJob):
     OUTPUT_PROTOCOL = JSONValueProtocol
 
     def mapper(self, key, email):
-        for term in get_terms(email['text']):
+        for term in get_terms(email['text']): #terms is a list of terms
             yield term, 1
 
     def reducer(self, term, howmany):

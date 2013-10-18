@@ -19,15 +19,15 @@ senders = {"kenneth":"kenneth.lay", "lay":"kenneth.lay", "j.skilling":"jeff.skil
 def sent_by_executive(email):
     return email['sender'].lower() in senders
 
-# executive_emails = json_lay.filter(sent_by_executive)
-# senders = json_lay.map(lambda x: x['sender']).distinct()
+executive_emails = json_lay.filter(sent_by_executive)
+senders = json_lay.map(lambda x: x['sender']).distinct()
 
-sender_terms = json_lay.flatMap(lambda x: [(x['sender'],term.lower()) for term in x['text'].split()]).countByValue()
+sender_terms = json_lay.flatMap(lambda x: [(x['sender'],term.lower()) for term in x['text'].split()]).countByValue().items()
 
 
-# sender_terms_count = sc.parallelize(sender_terms)
-print sender_terms.take(5)
-exit()
+sender_terms_count = sc.parallelize(sender_terms)
+print sender_terms_count.take(5)
+
 
 
 

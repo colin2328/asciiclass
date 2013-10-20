@@ -16,14 +16,6 @@ print 'total number of emails', total_number_emails
 
 
 # calculate TF
-senders = {"kenneth":"kenneth.lay", "lay":"kenneth.lay", "j.skilling":"jeff.skilling", "skilling":"jeff.skilling", "fastow":"andrew.fastow",  "a.fastow":"andrew.fastow",  "andrew.f":"andrew.fastow",  "rebecca.mark":"rebecca.mark", "r.mark":"rebecca.mark", "rebecca.m":"rebecca.mark", "rebeccam":"rebecca.mark", "stephen.cooper": "stephen.cooper",".stephen": "stephen.cooper", "s.cooper": "stephen.cooper", "cooper": "stephen.cooper"}
-
-# def sent_by_executive(email):
-#     return email['sender'].lower() in senders
-
-# executive_emails = json_lay.filter(sent_by_executive)
-# senders = json_lay.map(lambda x: x['sender']).distinct()
-
 sender_terms = json_lay.flatMap(lambda x: [(x['sender'],term.lower()) for term in x['text'].split()]).countByValue().items()
 sender_terms_count = sc.parallelize(sender_terms)
 print sender_terms_count.take(5)
@@ -31,7 +23,7 @@ print sender_terms_count.take(5)
 
 total_number_emails = json_lay.count()
 
-terms = json_lay.flatMap(lambda x: [term.lower() for term in x['text'].split()]).countByValue().items()
+terms = json_lay.flatMap(lambda x: [term.lower() for term in x['text'].split()]).distinct().items()
 terms_count = sc.parallelize(terms)
 idfs = {}
 for term_count in terms_count.collect():

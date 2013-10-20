@@ -31,8 +31,12 @@ total_number_emails = 516893
 
 terms = json_lay.flatMap(lambda x: [term.lower() for term in x['text'].split()]).countByValue().items()
 terms_count = sc.parallelize(terms)
+idfs = {}
 for term_count in terms_count.collect():
-    print term_count
+    term = term_count[0]
+    number_emails_with_term = term_count[1]
+    idf = math.log(total_number_emails / number_emails_with_term)
+    idfs[term] = idf
 
 print terms_count.take(5)
 

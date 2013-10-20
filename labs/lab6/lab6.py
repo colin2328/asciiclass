@@ -43,6 +43,7 @@ print terms_count.take(5)
 
 #loop through each sender_terms_count. calculate tf idf for each
 senders_to_term_count = sender_terms_count.groupBy(lambda sender_term_count: sender_term_count[0][0])
+print senders_to_term_count.take(5)
 
 def compute_tfidf(sender_term_counts):
     for sender_term_count in sender_term_counts:

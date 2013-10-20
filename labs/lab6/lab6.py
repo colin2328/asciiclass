@@ -27,7 +27,7 @@ sender_terms_count = sc.parallelize(sender_terms)
 print sender_terms_count.take(5)
 
 
-total_number_emails = 516893
+total_number_emails = json_lay.count()
 
 terms = json_lay.flatMap(lambda x: [term.lower() for term in x['text'].split()]).countByValue().items()
 terms_count = sc.parallelize(terms)
@@ -44,7 +44,9 @@ print terms_count.take(5)
 senders_to_term_count = sender_terms_count.groupBy(lambda sender_term_count: sender_term_count[0][0])
 
 def compute_tfidf(sender_term_counts):
-    for sender_term_count in sender_term_counts.collect():
+    for sender_term_count in sender_term_counts:
+        print sender_term_count
+        print sender_term_count[0]
         term = sender_term_count[0][1]
         tf = sender_term_count[1]
         tfidf = tf * idfs[term]

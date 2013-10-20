@@ -11,6 +11,10 @@ lay = sc.textFile('s3n://AKIAJFDTPC4XX2LVETGA:lJPMR8IqPw2rsVKmsSgniUd+cLhpItI42Z
 
 json_lay = lay.map(lambda x: json.loads(x)).cache()
 
+total_number_emails = json_lay.count()
+print 'total number of emails', total_number_emails
+exit()
+
 
 
 # calculate TF

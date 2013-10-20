@@ -11,32 +11,34 @@ lay = sc.textFile('s3n://AKIAJFDTPC4XX2LVETGA:lJPMR8IqPw2rsVKmsSgniUd+cLhpItI42Z
 
 json_lay = lay.map(lambda x: json.loads(x)).cache()
 
-total_number_emails = json_lay.count()
-print 'total number of emails', total_number_emails
 
 
 # calculate TF
+senders = {"kenneth":"kenneth.lay", "lay":"kenneth.lay", "j.skilling":"jeff.skilling", "skilling":"jeff.skilling", "fastow":"andrew.fastow",  "a.fastow":"andrew.fastow",  "andrew.f":"andrew.fastow",  "rebecca.mark":"rebecca.mark", "r.mark":"rebecca.mark", "rebecca.m":"rebecca.mark", "rebeccam":"rebecca.mark", "stephen.cooper": "stephen.cooper",".stephen": "stephen.cooper", "s.cooper": "stephen.cooper", "cooper": "stephen.cooper"}
+
+# def sent_by_executive(email):
+#     return email['sender'].lower() in senders
+
+# executive_emails = json_lay.filter(sent_by_executive)
+# senders = json_lay.map(lambda x: x['sender']).distinct()
+
 sender_terms = json_lay.flatMap(lambda x: [(x['sender'],term.lower()) for term in x['text'].split()]).countByValue().items()
 sender_terms_count = sc.parallelize(sender_terms)
 print sender_terms_count.take(5)
 
 
-total_number_emails = json_lay.count()
+total_number_emails = 516893
 
-terms = json_lay.flatMap(lambda x: [term.lower() for term in x['text'].split()]).distinct().collect()
+terms = json_lay.flatMap(lambda x: [term.lower() for term in x['text'].split()]).countByValue().items()
 terms_count = sc.parallelize(terms)
-print terms_count.take(5)
 idfs = {}
 for term_count in terms_count.collect():
     term = term_count[0]
     number_emails_with_term = term_count[1]
-    try:
-        idf = math.log(total_number_emails / number_emails_with_term)
-    except ValueError:
-        print 'math is ', total_number_emails, number_emails_with_term
+    idf = math.log(total_number_emails / number_emails_with_term)
     idfs[term] = idf
 
-
+print terms_count.take(5)
 
 #loop through each sender_terms_count. calculate tf idf for each
 senders_to_term_count = sender_terms_count.groupBy(lambda sender_term_count: sender_term_count[0][0])
@@ -52,7 +54,7 @@ def compute_tfidf(sender_list):
         return (sender_list[0], term, tfidf)
 
 sender_term_idf = senders_to_term_count.map(compute_tfidf)
-print 'sender_term_idf', sender_term_idf.take(5)
+print 'sender_term_idf',sender_term_idf.take(5)
 
 grouped_idf = sender_term_idf.groupBy(lambda sender_term_count: sender_term_count[0])
 print 'grouped_idf', grouped_idf.take(5)

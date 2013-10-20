@@ -25,6 +25,7 @@ total_number_emails = json_lay.count()
 
 terms = json_lay.flatMap(lambda x: [term.lower() for term in x['text'].split()]).distinct().collect()
 terms_count = sc.parallelize(terms)
+print terms_count.take(5)
 idfs = {}
 for term_count in terms_count.collect():
     term = term_count[0]
@@ -35,7 +36,7 @@ for term_count in terms_count.collect():
         print 'math is ', total_number_emails, number_emails_with_term
     idfs[term] = idf
 
-print terms_count.take(5)
+
 
 #loop through each sender_terms_count. calculate tf idf for each
 senders_to_term_count = sender_terms_count.groupBy(lambda sender_term_count: sender_term_count[0][0])

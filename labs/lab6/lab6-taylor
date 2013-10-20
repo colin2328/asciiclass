@@ -1,0 +1,18 @@
+Re-do lab 5's TF-IDF analysis using Spark. Include some amount (your choice) of sender disambiguation.
+
+Describe the disambiguation you performed. How did Spark affect (if at all) the choice of technique?
+I used spark's filter method to filter the senders by the executives. I used regex to match a few types of names in the sender's email
+
+Reflect on your experience using Spark:
+
+Compare your experience to using EMR. What things did Spark simplify?
+It made it easier to define what steps we hoped to complete, rather than confining us to one map and one reduce in each job. Spark provided some useful tools, such as map, filter, etc, and let us save RDD's and reuse at later stages.
+
+Given Spark, why would you use EMR?
+Very simple tasks may be easier using EMR. Other than that, if you can understand functions that spark offers, it seems like it would be hard to choose EMR over spark
+
+Were there any limitations to using the Spark model?
+The biggest limitation I found was trying to understand Sparks API and the methods it has. Just what spark can do is not immediately obvious, and it takes some time to learn this. Both spark and EMR change how you think about doing computation as well- doing functions on keys and values and aggregating them.
+
+Describe in a few sentences how Spark would simplify an implementation of pagerank over your answer in Lab 5 using EMR.
+Adding the number of links from a webpage is similiarly simple in Spark and EMR. This would be used to normalize a link by the number of links from each page. Inverting the link to gather who points to a webpage would involve spark's groupBy() method, grouping by the destination of the link. These would then be summed up (after normalizing).

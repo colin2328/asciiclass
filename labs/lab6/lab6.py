@@ -3,6 +3,7 @@ import json
 import time
 from operator import add
 import math
+import re
 
 print 'loading'
 sc = SparkContext("spark://ec2-54-200-174-121.us-west-2.compute.amazonaws.com:7077", "Simple App")

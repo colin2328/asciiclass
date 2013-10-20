@@ -23,14 +23,12 @@ senders = {"kenneth":"kenneth.lay", "lay":"kenneth.lay", "j.skilling":"jeff.skil
 # senders = json_lay.map(lambda x: x['sender']).distinct()
 
 sender_terms = json_lay.flatMap(lambda x: [(x['sender'],term.lower()) for term in x['text'].split()]).countByValue().items()
-
-
 sender_terms_count = sc.parallelize(sender_terms)
 print sender_terms_count.take(5)
-exit()
+total_number_emails = 516893
 
-
-
+terms = sender_terms.groupBy(lambda x: x[0][1]).countByValue()
+print terms.take(5)
 
 
 

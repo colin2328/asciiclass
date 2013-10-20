@@ -20,7 +20,7 @@ sender_terms_count = sc.parallelize(sender_terms)
 print sender_terms_count.take(5)
 
 
-total_number_emails = 516893
+total_number_emails = 51689
 
 terms = json_lay.flatMap(lambda x: [term.lower() for term in x['text'].split()]).countByValue().items()
 terms_count = sc.parallelize(terms)
@@ -49,11 +49,17 @@ def compute_tfidf(sender_list):
 sender_term_idf = senders_to_term_count.map(compute_tfidf)
 print 'sender_term_idf', sender_term_idf.take(5)
 
-grouped_idf = sender_term_idf.groupBy(lambda sender_term_idf: sender_term_idf[0])
-print 'grouped_idf', grouped_idf.take(5)
+# grouped_idf = sender_term_idf.groupBy(lambda sender_term_idf: sender_term_idf[0])
+# print 'grouped_idf', grouped_idf.take(5)
 
 def filter_by(pattern):
     return sender_term_idf.filter(lambda x: re.match(pattern, x[0]))
 
 filter_ken = filter_by('(ken.lay|kenneth.lay|lay.ken).*')
 print 'ken', sorted(filter_ken.collect(), key=lambda x: x[2], reverse=True)[:10]
+
+filter_jeff = filter_by('(jeff.skilling|jefferey.skilling|skilling.jeff).*')
+print 'jeff', sorted(filter_jeff.collect(), key=lambda x: x[2], reverse=True)[:10]
+
+filter_andrew = filter_by('(andrew.fastow|andy.fastow|fastow.andy).*')
+print 'andrew', sorted(filter_andrew.collect(), key=lambda x: x[2], reverse=True)[:10]

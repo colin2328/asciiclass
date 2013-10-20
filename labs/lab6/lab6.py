@@ -49,12 +49,17 @@ def compute_tfidf(sender_term_counts):
         tf = sender_term_count[1]
         tfidf = tf * idfs[term]
         return (sender, term, tfidf)
-        
+
 sender_term_idf = senders_to_term_count.map(compute_tfidf).groupBy(lambda sender_term_count: sender_term_count[0][0])
-
-
-
 print sender_term_idf.take(5)
+
+
+# def filter_by(pattern):
+#     return sender_term_idf.filter(lambda x: re.match(pattern, x[0]))
+
+# filter_ken = filter_by('(ken.lay|kenneth.lay|lay.ken).*')
+# print 'ken', sorted(filter_ken.collect(), key=lambda x: x[2], reverse=True)[:10]
+
 
 
 

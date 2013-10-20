@@ -52,7 +52,7 @@ grouped_idf = sender_term_idf.groupBy(lambda sender_term_idf: sender_term_idf[0]
 print 'grouped_idf', grouped_idf.take(5)
 
 def filter_by(pattern):
-    return grouped_idf.filter(lambda x: re.match(pattern, x[0]))
+    return sender_term_idf.filter(lambda x: re.match(pattern, x[0]))
 
 filter_ken = filter_by('(ken.lay|kenneth.lay|lay.ken).*')
 print 'ken', sorted(filter_ken.collect(), key=lambda x: x[2], reverse=True)[:10]

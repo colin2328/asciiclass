@@ -45,8 +45,6 @@ senders_to_term_count = sender_terms_count.groupBy(lambda sender_term_count: sen
 # print senders_to_term_count.take(5)
 
 def compute_tfidf(sender_list):
-    sender = sender_list[0]
-    print 'sender', sender
     for sender_term_count in sender_list[1]:
         print sender_term_count
         print sender_term_count[0]
@@ -58,7 +56,7 @@ def compute_tfidf(sender_list):
 sender_term_idf = senders_to_term_count.map(compute_tfidf)
 print 'sender_term_idf', sender_term_idf.take(5)
 
-grouped_idf = sender_term_idf.groupBy(lambda sender_term_count: sender_term_count[0][0])
+grouped_idf = sender_term_idf.groupBy(lambda sender_term_idf: sender_term_idf[0])
 print 'grouped_idf', grouped_idf.take(5)
 
 

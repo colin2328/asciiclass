@@ -39,7 +39,10 @@ idfs = {}
 for term_count in terms_count.collect():
     term = term_count[0]
     number_emails_with_term = term_count[1]
-    idf = math.log(total_number_emails / number_emails_with_term)
+    try:
+        idf = math.log(total_number_emails / number_emails_with_term)
+    except ValueError:
+        print 'math is ', total_number_emails, number_emails_with_term
     idfs[term] = idf
 
 print terms_count.take(5)

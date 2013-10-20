@@ -54,10 +54,10 @@ def compute_tfidf(sender_list):
         return (sender_list[0], term, tfidf)
 
 sender_term_idf = senders_to_term_count.map(compute_tfidf)
-print 'sender_term_idf',sender_term_idf.take(5)
+print sender_term_idf.take(5)
 
-grouped_idf = sender_term_idf.groupBy(lambda sender_term_count: sender_term_count[0])
-print 'grouped_idf', grouped_idf.take(5)
+grouped_idf = sender_term_idf.groupBy(lambda sender_term_count: sender_term_count[0][0])
+print grouped_idf.take(5)
 
 
 

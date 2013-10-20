@@ -24,7 +24,7 @@ print sender_terms_count.take(5)
 total_number_emails = 51689
 
 term_counts = defaultdict(int)
-terms = json_lay.flatMap(lambda x: [term_counts[term.lower()] +=1 ] for term in x['text'].split()])
+terms = json_lay.flatMap(lambda x: [term_counts[term.lower()] +=1 for term in x['text'].split()])
 terms_count = sc.parallelize(terms)
 idfs = {}
 for term_count in terms_count.collect():

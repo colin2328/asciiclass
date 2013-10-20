@@ -4,7 +4,7 @@ import time
 from operator import add
 import math
 import re
-from collections import defaultdict
+
 
 print 'loading'
 sc = SparkContext("spark://ec2-54-200-174-121.us-west-2.compute.amazonaws.com:7077", "Simple App")
@@ -21,10 +21,10 @@ sender_terms_count = sc.parallelize(sender_terms)
 print sender_terms_count.take(5)
 
 
-total_number_emails = 51689
+total_number_emails = 516893
 
-term_counts = defaultdict(int)
-terms = json_lay.flatMap(lambda x: [term_counts[term.lower()] +=1 for term in x['text'].split()])
+term_counts = {}
+terms = json_lay.flatMap(lambda x: [term.lower() for term in x['text'].split()]).countByValue().items()
 terms_count = sc.parallelize(terms)
 idfs = {}
 for term_count in terms_count.collect():

@@ -52,7 +52,7 @@ import org.apache.hadoop.io.*;
 public class LiveJournalPageRank extends Vertex<IntWritable,
     DoubleWritable, NullWritable, DoubleWritable> {
   /** Number of supersteps for this test */
-  public static final int MAX_SUPERSTEPS = 10;
+  public static final int MAX_SUPERSTEPS = 30;
 
 
   @Override

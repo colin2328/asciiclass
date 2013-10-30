@@ -54,9 +54,9 @@ public class SimplePageRankVertex extends Vertex<LongWritable,
 
   @Override
   public void compute(Iterable<DoubleWritable> messages) {
-    System.out.print('got here')
+    System.out.print('got here');
     if (getSuperstep() >= 1) {
-      System.out.print('got here3')
+      System.out.print('got here3');
       double sum = 0;
       for (DoubleWritable message : messages) {
         sum += message.get();
@@ -67,7 +67,7 @@ public class SimplePageRankVertex extends Vertex<LongWritable,
     }
 
     if (getSuperstep() < MAX_SUPERSTEPS) {
-      System.out.print('got here2')
+      System.out.print('got here2');
       long edges = getNumEdges();
       sendMessageToAllEdges(
           new DoubleWritable(getValue().get() / edges));

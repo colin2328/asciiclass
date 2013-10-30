@@ -12,7 +12,13 @@ Given Spark, why would you use EMR?
 Very simple tasks may be easier using EMR. Other than that, if you can understand functions that spark offers, it seems like it would be hard to choose EMR over spark
 
 Were there any limitations to using the Spark model?
-The biggest limitation I found was trying to understand Sparks API and the methods it has. Just what spark can do is not immediately obvious, and it takes some time to learn this. Both spark and EMR change how you think about doing computation as well- doing functions on keys and values and aggregating them.
+The biggest limitation I found was trying to understand Sparks API and the methods it has. Just what spark can do is not immediately obvious, and it takes some time to learn this. Both spark and EMR change how you think about doing computation as well- doing functions on keys and values and aggregating them. In addition, the inability to test locally (or at least not knowing how to set up my machine to test locally) was difficult, as debugging involved running on the entire cluster every time.
 
 Describe in a few sentences how Spark would simplify an implementation of pagerank over your answer in Lab 5 using EMR.
 Adding the number of links from a webpage is similiarly simple in Spark and EMR. This would be used to normalize a link by the number of links from each page. Inverting the link to gather who points to a webpage would involve spark's groupBy() method, grouping by the destination of the link. These would then be summed up (after normalizing).
+
+
+Notes:
+This lab was pretty difficult for me. Firstly, I had a lot of trouble running on amazons ec2 clusters (not enough available nodes on clusters, kept running out of memory in my cluster for some reason). After a couple of days of not being able to run on my cluster (memory issues), I used my friend's cluster which worked OK. Coding in Spark felt a bit unnatural, and the whole lab took > 12 hours. However, I think it is a really cool tool to learn and struggle with.
+
+Along with that, my lab is several days late. I'm not sure how many late days I have left, but I tried to get it done on time! I just ran into many problems along the way

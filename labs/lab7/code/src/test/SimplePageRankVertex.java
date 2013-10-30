@@ -40,6 +40,7 @@ import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.giraph.Algorithm;
+import org.apache.log4j.Logger;
 
 /**
  * Demonstrates the basic Pregel PageRank implementation.
@@ -51,6 +52,9 @@ public class SimplePageRankVertex extends Vertex<LongWritable,
     DoubleWritable, FloatWritable, DoubleWritable> {
   /** Number of supersteps for this test */
   public static final int MAX_SUPERSTEPS = 2;
+
+  private static final Logger LOG =
+      Logger.getLogger(SimplePageRankVertex.class);
 
   @Override
   public void compute(Iterable<DoubleWritable> messages) {
@@ -64,6 +68,7 @@ public class SimplePageRankVertex extends Vertex<LongWritable,
       DoubleWritable vertexValue =
           new DoubleWritable((0.15f / getTotalNumVertices()) + 0.85f * sum);
       setValue(vertexValue);
+      LOG.info(getId() + ": PageRank=" + vertexValue);
     }
 
     if (getSuperstep() < MAX_SUPERSTEPS) {

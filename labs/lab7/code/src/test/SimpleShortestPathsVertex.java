@@ -44,6 +44,7 @@ public class SimpleShortestPathsVertex extends
   /** Class logger */
   private static final Logger LOG =
       Logger.getLogger(SimpleShortestPathsVertex.class);
+  public static final int MAX_SUPERSTEPS = 2;
 
   /**
    * Is this vertex the source id?

@@ -49,7 +49,7 @@ import org.apache.hadoop.io.*;
 @Algorithm(
     name = "Page rank"
 )
-public class SimplePageRankVertex extends Vertex<IntWritable,
+public class LiveJournalPageRank extends Vertex<IntWritable,
     DoubleWritable, NullWritable, DoubleWritable> {
   /** Number of supersteps for this test */
   public static final int MAX_SUPERSTEPS = 2;

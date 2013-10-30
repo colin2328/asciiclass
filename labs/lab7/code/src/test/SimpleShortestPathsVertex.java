@@ -56,28 +56,25 @@ public class SimpleShortestPathsVertex extends
 
   @Override
   public void compute(Iterable<DoubleWritable> messages) {
-    if (getSuperstep() == 0) {
-      setValue(new DoubleWritable(Double.MAX_VALUE));
-    }
-    double minDist = isSource() ? 0d : Double.MAX_VALUE;
-    for (DoubleWritable message : messages) {
-      minDist = Math.min(minDist, message.get());
-    }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Vertex " + getId() + " got minDist = " + minDist +
-          " vertex value = " + getValue());
-    }
-    if (minDist < getValue().get()) {
-      setValue(new DoubleWritable(minDist));
-      for (Edge<LongWritable, FloatWritable> edge : getEdges()) {
-        double distance = minDist + edge.getValue().get();
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Vertex " + getId() + " sent to " +
-              edge.getTargetVertexId() + " = " + distance);
-        }
-        sendMessage(edge.getTargetVertexId(), new DoubleWritable(distance));
+    System.out.print("got here");
+    if (getSuperstep() >= 1) {
+      System.out.print("got here3");
+      double sum = 0;
+      for (DoubleWritable message : messages) {
+        sum += message.get();
       }
+      DoubleWritable vertexValue =
+          new DoubleWritable((0.15f / getTotalNumVertices()) + 0.85f * sum);
+      setValue(vertexValue);
     }
-    voteToHalt();
+
+    if (getSuperstep() < MAX_SUPERSTEPS) {
+      System.out.print("got here2");
+      long edges = getNumEdges();
+      sendMessageToAllEdges(
+          new DoubleWritable(getValue().get() / edges));
+    } else {
+      voteToHalt();
+    }
   }
 }

@@ -116,6 +116,7 @@ public class LiveJournalPageRank extends Vertex<IntWritable,
     @Override
     public void preApplication()
       throws InstantiationException, IllegalAccessException {
+
     }
 
     @Override
@@ -151,4 +152,20 @@ public class LiveJournalPageRank extends Vertex<IntWritable,
     @Override
     public void postSuperstep() { }
   }
+
+  /**
+   * Master compute associated with {@link SimplePageRankVertex}.
+   * It registers required aggregators.
+   */
+  public static class SimplePageRankVertexMasterCompute extends
+      DefaultMasterCompute {
+    @Override
+    public void initialize() throws InstantiationException,
+        IllegalAccessException {
+      registerAggregator(SUM_AGG, LongSumAggregator.class);
+      registerPersistentAggregator(MIN_AGG, DoubleMinAggregator.class);
+      registerPersistentAggregator(MAX_AGG, DoubleMaxAggregator.class);
+    }
+  }
+
 }

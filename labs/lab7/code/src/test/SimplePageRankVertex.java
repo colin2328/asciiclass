@@ -1,3 +1,4 @@
+package test;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,7 +17,7 @@
  * limitations under the License.
  */
 
-package test;
+
 import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.giraph.Algorithm;
 import org.apache.log4j.Logger;
 
 /**
@@ -49,16 +51,10 @@ import org.apache.log4j.Logger;
 public class SimplePageRankVertex extends Vertex<LongWritable,
     DoubleWritable, FloatWritable, DoubleWritable> {
   /** Number of supersteps for this test */
-  public static final int MAX_SUPERSTEPS = 30;
-  /** Logger */
+  public static final int MAX_SUPERSTEPS = 2;
+
   private static final Logger LOG =
       Logger.getLogger(SimplePageRankVertex.class);
-  /** Sum aggregator name */
-  private static String SUM_AGG = "sum";
-  /** Min aggregator name */
-  private static String MIN_AGG = "min";
-  /** Max aggregator name */
-  private static String MAX_AGG = "max";
 
   @Override
   public void compute(Iterable<DoubleWritable> messages) {
@@ -70,12 +66,7 @@ public class SimplePageRankVertex extends Vertex<LongWritable,
       DoubleWritable vertexValue =
           new DoubleWritable((0.15f / getTotalNumVertices()) + 0.85f * sum);
       setValue(vertexValue);
-      aggregate(MAX_AGG, vertexValue);
-      aggregate(MIN_AGG, vertexValue);
-      aggregate(SUM_AGG, new LongWritable(1));
-      LOG.info(getId() + ": PageRank=" + vertexValue +
-          " max=" + getAggregatedValue(MAX_AGG) +
-          " min=" + getAggregatedValue(MIN_AGG));
+      LOG.info(getId() + ": PageRank=" + vertexValue);
     }
 
     if (getSuperstep() < MAX_SUPERSTEPS) {
@@ -85,68 +76,5 @@ public class SimplePageRankVertex extends Vertex<LongWritable,
     } else {
       voteToHalt();
     }
-  }
-
-  /**
-   * Worker context used with {@link SimplePageRankVertex}.
-   */
-  public static class SimplePageRankVertexWorkerContext extends
-      WorkerContext {
-    /** Final max value for verification for local jobs */
-    private static double FINAL_MAX;
-    /** Final min value for verification for local jobs */
-    private static double FINAL_MIN;
-    /** Final sum value for verification for local jobs */
-    private static long FINAL_SUM;
-
-    public static double getFinalMax() {
-      return FINAL_MAX;
-    }
-
-    public static double getFinalMin() {
-      return FINAL_MIN;
-    }
-
-    public static long getFinalSum() {
-      return FINAL_SUM;
-    }
-
-    @Override
-    public void preApplication()
-      throws InstantiationException, IllegalAccessException {
-    }
-
-    @Override
-    public void postApplication() {
-      FINAL_SUM = this.<LongWritable>getAggregatedValue(SUM_AGG).get();
-      FINAL_MAX = this.<DoubleWritable>getAggregatedValue(MAX_AGG).get();
-      FINAL_MIN = this.<DoubleWritable>getAggregatedValue(MIN_AGG).get();
-
-      LOG.info("aggregatedNumVertices=" + FINAL_SUM);
-      LOG.info("aggregatedMaxPageRank=" + FINAL_MAX);
-      LOG.info("aggregatedMinPageRank=" + FINAL_MIN);
-    }
-
-    @Override
-    public void preSuperstep() {
-      if (getSuperstep() >= 3) {
-        LOG.info("aggregatedNumVertices=" +
-            getAggregatedValue(SUM_AGG) +
-            " NumVertices=" + getTotalNumVertices());
-        if (this.<LongWritable>getAggregatedValue(SUM_AGG).get() !=
-            getTotalNumVertices()) {
-          throw new RuntimeException("wrong value of SumAggreg: " +
-              getAggregatedValue(SUM_AGG) + ", should be: " +
-              getTotalNumVertices());
-        }
-        DoubleWritable maxPagerank = getAggregatedValue(MAX_AGG);
-        LOG.info("aggregatedMaxPageRank=" + maxPagerank.get());
-        DoubleWritable minPagerank = getAggregatedValue(MIN_AGG);
-        LOG.info("aggregatedMinPageRank=" + minPagerank.get());
-      }
-    }
-
-    @Override
-    public void postSuperstep() { }
   }
 }

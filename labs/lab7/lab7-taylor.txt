@@ -1,0 +1,41 @@
+Colin Taylor
+
+List the vertex ids of the top 10 PageRanks.
+
+Vertex: ['2914'] 	Value: 7.54770447786e-06
+Vertex: ['8737'] 	Value: 7.41985491333e-06
+Vertex: ['27909'] 	Value: 7.32141635328e-06
+Vertex: ['2678'] 	Value: 7.00304560254e-06
+Vertex: ['1860'] 	Value: 6.85933765888e-06
+Vertex: ['67784'] 	Value: 6.57257518576e-06
+Vertex: ['15050'] 	Value: 6.45554126166e-06
+Vertex: ['1220'] 	Value: 4.99254360834e-06
+Vertex: ['214538'] 	Value: 4.32274830432e-06
+Vertex: ['4494'] 	Value: 4.02673903859e-06
+Vertex: ['2409'] 	Value: 4.01039603867e-06
+Vertex: ['134'] 	Value: 3.55729727529e-06
+Vertex: ['1772'] 	Value: 3.40376685831e-06
+Vertex: ['39394'] 	Value: 3.17768790304e-06
+Vertex: ['65677'] 	Value: 3.14200657931e-06
+Vertex: ['1689'] 	Value: 3.08937131554e-06
+Vertex: ['44181'] 	Value: 3.06109485897e-06
+Vertex: ['7327'] 	Value: 3.02983596307e-06
+Vertex: ['2659'] 	Value: 3.02750373247e-06
+
+
+Compare the PageRank implementation in Giraph with your thought experiments from the previous labs on:
+Hadoop
+Spark
+
+I think implementing PageRank on Giraph was much easier to think about than on Spark and Hadoop. With Spark, you need to translate what you want to do into Spark's API, and with map reduce, you must divide what you want to do into jobs that need to build on one another. The biggest reason that Giraph is easier, though, is that PageRank is really an algorithm meant to work on graphs, and Giraph's vertex centric approach makes this much easier because at each step everything is calculated per node. Addiontally, Giraph already has supersteps to use so this is very natural to write in.
+
+
+Compare with the previous systems along the usability dimesion. What would you most likely use in the future?
+Overall, all three systems (vanilla Hadoop, Spark and Giraph) all are on top of hadoop, which has been very painful to use. Configuring the system, managing memory, the inability to develop and test locally, and the difficulties of debugging have all made developing on the hadoop infrastruce difficult, which makes me less likely to use them in the future. Overall, however, there are many things which all 3 systems are very useful for. For example, if I had a large graph dataset, and the function was already implemented in Giraph, I would probably use it. I would be much less likely to implement my own input/output readers and functions in Giraph. I'm sure I will use Hadoop in the future if the company or organization that I am working with uses it because it is ubiquitous.
+
+
+
+What are the pros and cons of vertex-centric computation model? Did this even make sense to do?
+I thought it was a very natural way to think about the problem. 
+Pros: doing iterative computation on a per node basis is intuitive for graph problems that iterate over nodes and edges. Also, providing supersteps further strengthens its value.
+Cons: It is only useful for graphs. You can only iterate forward and it is hard to save state from previos arbitrary steps

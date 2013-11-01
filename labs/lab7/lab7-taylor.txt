@@ -1,5 +1,9 @@
 Colin Taylor
 
+Note:
+This lab is a day late, sorry! I had trouble running on the hadoop cluster. Talked to Eugene about this already. I ended up running on cluster with the full dataset, though.
+Worked with Brian Bell on the lab
+
 List the vertex ids of the top 10 PageRanks.
 
 Vertex: ['2914'] 	Value: 7.54770447786e-06

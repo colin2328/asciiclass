@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>My Awesome D3 vis</title>
+        <script type="text/javascript" src="d3/d3.v3.js"></script>
+        <style type="text/css">
+        </style>
+    </head>
+    <body>
+<!--         <svg width="500" height="50">
+            <rect x="0" y="0" width="500" height="50"/>
+</svg> -->
+
+<script type="text/javascript">
+
+
+
+//Width and height
+// var w = 500;
+// var h = 50;
+
+
+//             var dataset = [ 5, 10, 15, 20, 25 ];
+// var svg = d3.select("body")
+//             .append("svg")
+//             .attr("width", w)   // <-- Here
+//             .attr("height", h); // <-- and here!
+//             var circles = svg.selectAll("circle")
+//     .data(dataset)
+//     .enter()
+//     .append("circle");
+//     circles.attr("cx", function(d, i) {
+//             return (i * 50) + 25;
+//         })
+//        .attr("cy", h/2)
+//        .attr("r", function(d) {
+//             return d;
+//        });
+
+d3.csv("/data/pickups_cut.csv", function(d) {
+  return {
+    name: d.name,
+    lat: +d.lat,
+    lon: +d.lon,
+    time: new Date(Date.parse(d.time)),
+    count: +d.count,
+    diff: +d.diff,
+    x: new Date(Date.parse(d.time)),
+    y: +d.count
+  };
+
+</script>   
+    </body>
+</html>     

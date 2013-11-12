@@ -4,51 +4,119 @@
         <meta charset="utf-8">
         <title>My Awesome D3 vis</title>
         <script type="text/javascript" src="d3/d3.v3.js"></script>
+        <script src="./underscore.js"></script>
         <style type="text/css">
+        .yaxis, .xaxis {font-size:150%}
+        body {text-align:center;}
         </style>
     </head>
     <body>
-<!--         <svg width="500" height="50">
-            <rect x="0" y="0" width="500" height="50"/>
-</svg> -->
+        <h1> My awesome D3 Vis</h1>
+        <h2> Animation shows the taxi cab pickups as they happen </h2>
+
 
 <script type="text/javascript">
+var margin = {top: 30, right: 250, bottom: 30, left: 50},
+    width = 1260 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var graphit = function(data) {    
+
+  var els = svg.selectAll("circle")
+
+  var latmin = d3.min(data, function(d){return d.lat})
+  var latmax = d3.max(data, function(d){return d.lat})
+  var lat = d3.scale.linear().domain([latmin, latmax]).range([height, 10]);
+  var longmin = d3.min(data, function(d){return d.lon})
+  var longmax = d3.max(data, function(d){return d.lon})
+  var longitude = d3.scale.linear().domain([longmin, longmax]).range([10, width]);
+
+  var tmin = d3.min(data, function(d){return d.time})
+  var tmax = d3.max(data, function(d){return d.time})
+  var time = d3.scale.linear().domain([tmin, tmax]).range([1000, 10000]);
+
+  var xAxis = d3.svg.axis()
+    .scale(longitude)
+    .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+    .scale(lat)
+    .orient("left");
+
+    svg.append("g")
+      .attr("class", "yaxis")
+      .call(yAxis)
+
+      .append("text")
+      .attr("x", 500)
+      .attr("y", -5)
+      .text("Latitude ");
+
+
+  svg.append("g")
+  .attr("class", "xaxis")
+  .call(xAxis)
+  .append("text")
+  .attr("y", 250)
+  .text("Longitude ");
+
+
+  d3.csv("/data/interestpoints.csv", function(d) {
+  return {
+    lat: +d.LAT,
+    lon: +d.LONG,
+    name: d.name,
+  };
+
+}, function(err, rows) {
+  els.data(rows)
+    .enter()
+    .append('circle')
+    .attr('r', 5)
+    .attr('cy', function(d) { return lat(d.lat) })
+    .attr('cx', function(d) { return longitude(d.lon) })
+
+
+})
 
 
 
-//Width and height
-// var w = 500;
-// var h = 50;
+  els.data(data)
+    .enter()
+    .append('circle')
+    .attr('r', 0)
+    .attr('fill-opacity', 0.2)
+    .attr('fill', 'blue')
+    .attr('cy', function(d) { return lat(d.lat) })
+    .attr('cx', function(d) { return longitude(d.lon) })
 
+    d3.selectAll('circle').transition()
+  .delay(function(d,i){return time(d.time) })
+  // .attr('r', 0)
+  .transition()
+  .attr('r', 3)
 
-//             var dataset = [ 5, 10, 15, 20, 25 ];
-// var svg = d3.select("body")
-//             .append("svg")
-//             .attr("width", w)   // <-- Here
-//             .attr("height", h); // <-- and here!
-//             var circles = svg.selectAll("circle")
-//     .data(dataset)
-//     .enter()
-//     .append("circle");
-//     circles.attr("cx", function(d, i) {
-//             return (i * 50) + 25;
-//         })
-//        .attr("cy", h/2)
-//        .attr("r", function(d) {
-//             return d;
-//        });
+}
 
 d3.csv("/data/pickups_cut.csv", function(d) {
   return {
-    name: d.name,
-    lat: +d.lat,
-    lon: +d.lon,
+    lat: +d.latitude,
+    lon: +d.longitude,
     time: new Date(Date.parse(d.time)),
-    count: +d.count,
-    diff: +d.diff,
-    x: new Date(Date.parse(d.time)),
-    y: +d.count
   };
+
+}, function(err, rows) {
+    // console.log(rows)
+  graphit(rows);
+})
+
+
 
 </script>   
     </body>

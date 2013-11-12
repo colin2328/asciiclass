@@ -67,7 +67,7 @@ var graphit = function(data) {
   .text("Longitude ");
 
 
-  d3.csv("/data/interestpoints.csv", function(d) {
+  d3.csv("data/interestpoints.csv", function(d) {
   return {
     lat: +d.LAT,
     lon: +d.LONG,
@@ -104,7 +104,7 @@ var graphit = function(data) {
 
 }
 
-d3.csv("/data/pickups_cut.csv", function(d) {
+d3.csv("data/pickups_cut.csv", function(d) {
   return {
     lat: +d.latitude,
     lon: +d.longitude,
@@ -118,6 +118,13 @@ d3.csv("/data/pickups_cut.csv", function(d) {
 
 
 
-</script>   
-    </body>
+</script>
+
+
+<p> <b>  What is the message in your visualization and what techniques did you use to illustrate it? </b></p> 
+I wanted to show what the Boston taxi cabs look like in real time, basded on location. The viewer can see the taxi cabs picking up in waves throughout the day because the dots represent a taxi cab pickup at that lat/long and appear in at the time the taxi appeared. I used transitions and opaque, blue dots to illustrate the taxis, and black, permanent dots to represent the interest points.
+<p> <b> If you used interaction or animation, how does it facilitate the user's understanding? </b></p> 
+It gives the user a sense for how the taxis move. Basically, it gives the user a third visual dimension, time, to illustrate the time dimension of the taxi cabs.
+<p> <b> What format is the data that is used by the visualization? Is it the raw data or did you need to compute some summary or derived data product? </b></p> 
+I used the raw data.  </body>
 </html>     

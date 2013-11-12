@@ -40,3 +40,4 @@ nosetests.xml
 untitled.sublime-project
 asciiclass.sublime-project
 asciiclass.sublime-workspace
+labs/lab8/data/pickups_train.csv
